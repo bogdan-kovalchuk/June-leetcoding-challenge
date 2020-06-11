@@ -16,7 +16,7 @@ public:
             colors[n]++;
 
         int k = 0;
-        for (int i = 0; i < sizeof(colors)/sizeof(colors[0]); ++i) {
+        for (int i = 0; i < sizeof(colors) / sizeof(colors[0]); ++i) {
             for (int j = 0; j < colors[i]; ++j) {
                 nums[k] = i;
                 k++;
