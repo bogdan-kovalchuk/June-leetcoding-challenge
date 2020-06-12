@@ -1,12 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <map>
-#include <string>
+//#include <random>
+#include <set>
 
 
 using std::vector;
-using std::map;
-using std::string;
+using std::set;
 
 class RandomizedSet {
 public:
@@ -17,18 +16,33 @@ public:
 
     /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     bool insert(int val) {
-
+        bool retval = false;
+        if (s.find(val) == s.end()){
+            s.insert(val);
+            retval = true;
+        }
+        return retval;
     }
 
     /** Removes a value from the set. Returns true if the set contained the specified element. */
     bool remove(int val) {
-
+        bool retval = false;
+        if (s.find(val) != s.end()){
+            s.erase(val);
+            retval = true;
+        }
+        return retval;
     }
 
     /** Get a random element from the set. */
     int getRandom() {
-
+        auto it = s.begin();
+        int random = std::rand() % s.size();
+        std::advance(it, random);
+        return *it;
     }
+private:
+    set<int> s;
 };
 
 
