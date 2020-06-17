@@ -49,7 +49,7 @@ int main() {
     vector<vector<char>> board = {{'X', 'X', 'X', 'X'},
                                   {'X', 'O', 'O', 'X'},
                                   {'X', 'X', 'O', 'X'},
-                                  {'X', 'O', 'O', 'X'}};
+                                  {'X', 'O', 'X', 'X'}};
 
     Solution solution = Solution();
     solution.solve(board);
