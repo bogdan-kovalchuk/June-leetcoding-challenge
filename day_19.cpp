@@ -15,9 +15,9 @@ public:
         int beg = 0, end = n - 1;
         string result;
 
-        power = vector<int>(n, 1);
-        for (int i = 1; i < n; i++)
-            power[i] = (power[i - 1] * 26) % prime;
+        power = vector<int>(n);
+        for (int i = 0; i < n; i++)
+            power[i] = (i == 0) ? 1 : (power[i - 1] * 26) % prime;
 
         while (beg <= end) {
             int mid = beg + (end - beg) / 2;
@@ -43,18 +43,12 @@ public:
         }
         hash[t] = {0};
 
-//        for (auto p: hash) {
-//            for (auto c: p.second) {
-//                std::cout << c << " ";
-//            }
-//            std::cout << std::endl;
-//        }
-
         for (int i = len; i < n; i++) {
             t = ((t - power[len - 1] * (S[i - len] - 'a')) % prime + prime) % prime;
             t = (t * 26 + (S[i] - 'a')) % prime;
 
-            if (hash.find(t) == hash.end()) hash[t] = {i - len + 1};
+            if (hash.find(t) == hash.end())
+                hash[t] = {i - len + 1};
             else {
                 for (int index: hash[t]) {
                     if (S.substr(index, len) == S.substr(i - len + 1, len))
