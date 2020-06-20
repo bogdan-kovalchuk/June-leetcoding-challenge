@@ -7,7 +7,7 @@ using std::unordered_map;
 using std::string;
 
 class Solution {
-    int prime = INT16_MAX;
+    int prime = 10000007;
     vector<int> power;
 public:
     string longestDupSubstring(const string &S) {
