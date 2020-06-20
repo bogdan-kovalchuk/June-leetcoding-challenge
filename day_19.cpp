@@ -7,69 +7,68 @@ using std::unordered_map;
 using std::string;
 
 class Solution {
+    int prime = INT16_MAX;
+    vector<int> power;
 public:
     string longestDupSubstring(const string &S) {
-        int beg = 0, end = S.size();
-        int q = INT32_MAX;
-        string found;
-        while (beg + 1 < end) {
-            int mid = (beg + end) / 2;
-            string candidate;
-            if (rabinKarp(S, mid, q, candidate)) {
-                beg = mid;
-                found = candidate;
+        int n = S.size();
+        int beg = 0, end = n - 1;
+        string result;
+
+        power = vector<int>(n, 1);
+        for (int i = 1; i < n; i++)
+            power[i] = (power[i - 1] * 26) % prime;
+
+        while (beg <= end) {
+            int mid = beg + (end - beg) / 2;
+            string candidate = rabinKarp(S, mid);
+
+            if (candidate.size() > result.size()) {
+                result = candidate;
+                beg = mid + 1;
             } else {
-                end = mid;
+                end = mid - 1;
             }
         }
-        return found;
+        return result;
     }
 
-    bool rabinKarp(const string &text, int M, int q, string &str) {
-        if (M == 0) return true;
-        int64_t h = 1, t = 0, d = 256;
+    string rabinKarp(const string &S, int len) {
+        if (len == 0) return "";
+        int n = S.size(), t = 0;
+        unordered_map<int, vector<int>> hash;
 
-        unordered_map<int64_t, vector<int>> dic;
-        for (int i = 0; i < M - 1; ++i)
-            h = (h * d) % q;
-
-        for (int i = 0; i < M; ++i) {
-            t = (d * t + text[i]) % q;
+        for (int i = 0; i < len; i++) {
+            t = (t * 26 + (S[i] - 'a')) % prime;
         }
-        dic[t].push_back(0);
+        hash[t] = {0};
 
-        for (int i = 0; i < text.size() - M; ++i) {
-            t = (d * (t - text[i] * h) + text[i + M]) % q;
-            dic[t].push_back(i + 1);
-        }
+//        for (auto p: hash) {
+//            for (auto c: p.second) {
+//                std::cout << c << " ";
+//            }
+//            std::cout << std::endl;
+//        }
 
-        for (const auto &item : dic) {
-            for (const auto &p:  combination(item.second)) {
-                if (text.substr(p[0], p[0] + M - 1) == text.substr(p[1], p[1] + M - 1)) {
-                    str = text.substr(p[0], p[0] + M - 1);
-                    return true;
+        for (int i = len; i < n; i++) {
+            t = ((t - power[len - 1] * (S[i - len] - 'a')) % prime + prime) % prime;
+            t = (t * 26 + (S[i] - 'a')) % prime;
+
+            if (hash.find(t) == hash.end()) hash[t] = {i - len + 1};
+            else {
+                for (int index: hash[t]) {
+                    if (S.substr(index, len) == S.substr(i - len + 1, len))
+                        return S.substr(index, len);
                 }
-            }
-
-        }
-        str = "";
-        return false;
-
-    }
-
-    vector<vector<int>> combination(vector<int> v) {
-        vector<vector<int>> out;
-        for (int i = 0; i < v.size() - 1; ++i) {
-            for (int j = i + 1; j < v.size(); j++) {
-                out.push_back({v[i], v[j]});
+                hash[t].push_back({i - len + 1});
             }
         }
-        return out;
+        return "";
     }
 };
 
 int main() {
-    string S = "banana";
+    string S = "moplvidmaagmsiyyrkchbyhivlqwqsjcgtumqscmxrxrvwsnjjvygrelcbjgbpounhuyealllginkitfaiviraqcycjmskrozcdqylbuejrgfnquercvghppljmojfvylcxakyjxnampmakyjbqgwbyokaybcuklkaqzawageypfqhhasetugatdaxpvtevrigynxbqodiyioapgxqkndujeranxgebnpgsukybyowbxhgpkwjfdywfkpufcxzzqiuglkakibbkobonunnzwbjktykebfcbobxdflnyzngheatpcvnhdwkkhnlwnjdnrmjaevqopvinnzgacjkbhvsdsvuuwwhwesgtdzuctshytyfugdqswvxisyxcxoihfgzxnidnfadphwumtgdfmhjkaryjxvfquucltmuoosamjwqqzeleaiplwcbbxjxxvgsnonoivbnmiwbnijkzgoenohqncjqnckxbhpvreasdyvffrolobxzrmrbvwkpdbfvbwwyibydhndmpvqyfmqjwosclwxhgxmwjiksjvsnwupraojuatksjfqkvvfroqxsraskbdbgtppjrnzpfzabmcczlwynwomebvrihxugvjmtrkzdwuafozjcfqacenabmmxzcueyqwvbtslhjeiopgbrbvfbnpmvlnyexopoahgmwplwxnxqzhucdieyvbgtkfmdeocamzenecqlbhqmdfrvpsqyxvkkyfrbyolzvcpcbkdprttijkzcrgciidavsmrczbollxbkytqjwbiupvsorvkorfriajdtsowenhpmdtvamkoqacwwlkqfdzorjtepwlemunyrghwlvjgaxbzawmikfhtaniwviqiaeinbsqidetfsdbgsydkxgwoqyztaqmyeefaihmgrbxzyheoegawthcsyyrpyvnhysynoaikwtvmwathsomddhltxpeuxettpbeftmmyrqclnzwljlpxazrzzdosemwmthcvgwtxtinffopqxbufjwsvhqamxpydcnpekqhsovvqugqhbgweaiheeicmkdtxltkalexbeftuxvwnxmqqjeyourvbdfikqnzdipmmmiltjapovlhkpunxljeutwhenrxyfeufmzipqvergdkwptkilwzdxlydxbjoxjzxwcfmznfqgoaemrrxuwpfkftwejubxkgjlizljoynvidqwxnvhngqakmmehtvykbjwrrrjvwnrteeoxmtygiiygynedvfzwkvmffghuduspyyrnftyvsvjstfohwwyxhmlfmwguxxzgwdzwlnnltpjvnzswhmbzgdwzhvbgkiddhirgljbflgvyksxgnsvztcywpvutqryzdeerlildbzmtsgnebvsjetdnfgikrbsktbrdamfccvcptfaaklmcaqmglneebpdxkvcwwpndrjqnpqgbgihsfeotgggkdbvcdwfjanvafvxsvvhzyncwlmqqsmledzfnxxfyvcmhtjreykqlrfiqlsqzraqgtmocijejneeezqxbtomkwugapwesrinfiaxwxradnuvbyssqkznwwpsbgatlsxfhpcidfgzrc";
 
     Solution solution = Solution();
     std::cout << solution.longestDupSubstring(S) << std::endl;
