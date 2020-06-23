@@ -22,7 +22,14 @@ struct TreeNode {
 class Solution {
 public:
     int countNodes(TreeNode *root) {
-
+        int n = 1;
+        if (root->left != nullptr){
+            n += countNodes(root->left);
+        }
+        if (root->right != nullptr){
+            n += countNodes(root->right);
+        }
+        return n;
     }
 };
 
@@ -48,7 +55,7 @@ int main() {
     TreeNode *root = insertLevelOrder(nodes, root, 0, nodes.size());
 
     Solution solution = Solution();
-    auto out = solution.countNodes(root);
+    std::cout << solution.countNodes(root) << std::endl;
 
     return 0;
 }
