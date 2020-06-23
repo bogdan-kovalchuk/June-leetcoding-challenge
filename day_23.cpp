@@ -22,11 +22,12 @@ struct TreeNode {
 class Solution {
 public:
     int countNodes(TreeNode *root) {
+        if (root == nullptr) return 0;
         int n = 1;
-        if (root->left != nullptr){
+        if (root->left != nullptr) {
             n += countNodes(root->left);
         }
-        if (root->right != nullptr){
+        if (root->right != nullptr) {
             n += countNodes(root->right);
         }
         return n;
