@@ -12,12 +12,22 @@ public:
 
         while (dp.size() <= n) {
             int j = dp.size();
-            int s = INT_MAX;
+            int s = INT32_MAX;
             for (int i = 1; i * i <= j; ++i)
-                s = min(s, dp[j - i * i] + 1);
+                s = std::min(s, dp[j - i * i] + 1);
             dp.push_back(s);
         }
 
         return dp[n];
     }
 };
+
+int main() {
+    int n = 12;
+
+    Solution solution = Solution();
+    std::cout << solution.numSquares(n) << std::endl;
+
+    return 0;
+}
+
